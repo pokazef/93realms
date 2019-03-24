@@ -237,6 +237,33 @@ class Game extends ConnectionHandler {
       return;
     }
 
+    if (firstWord === "run") {
+      var runStr = removeWord(data, 0);
+      var runPat = runStr.match(/[a-z]+|[^a-z]+/gi);
+      var runValid=true;
+      function inValidRun(){
+        runValid=false;
+        p.sendString('<red>Your run pattern is invalid.</red>');
+        return;
+      }
+      for (var r = 0; r < runPat.length; r++) {if (isNaN(runPat[r]) && runPat[r].length>1) {inValidRun();return;}}
+      if ( isNaN(runPat[0]) || isNaN(runPat[runPat.length-1])==false || (runPat.length % 2)==1 )  {inValidRun();return;}
+      var vds=['n','s','e','w'];
+      for (var r = 0; r < runPat.length; r=r+2) {if (vds.includes(runPat[r+1])==false) {inValidRun();return;}}
+      var diz=this;
+      function runTimeout(ri,st){
+        setTimeout(function() { 
+          if (ri=="n") { diz.move(Direction.NORTH) };
+          if (ri=="s") { diz.move(Direction.SOUTH) };
+          if (ri=="w") { diz.move(Direction.WEST) };
+          if (ri=="e") { diz.move(Direction.EAST) };
+        }, st*200);
+      }
+      if (runValid) {var st=1;for (var r = 0; r < runPat.length; r=r+2) {for (var t = 0; t < runPat[r]; t++) {runTimeout(runPat[r+1],st);st+=1}}}
+      return;
+    }
+
+
     // ------------------------------------------------------------------------
     //  GOD access commands
     // ------------------------------------------------------------------------
@@ -938,6 +965,7 @@ class Game extends ConnectionHandler {
         " who all                    - Shows a list of everyone\r\n" +
         " look                       - Shows you the contents of a room\r\n" +
         " north/east/south/west      - Moves in a direction\r\n" +
+        " run <pattern>              - Run to some location. eg: run 3w1s\r\n" +
         " get/drop <item>            - Picks up or drops an item on the ground\r\n" +
         " train                      - Train to the next level (TR)\r\n" +
         " editstats                  - Edit your statistics (TR)\r\n" +
