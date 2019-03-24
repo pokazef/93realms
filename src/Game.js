@@ -12,6 +12,8 @@ const Player = require('./Player');
 const Train = require('./Train');
 const { cc } = require('./Telnet');
 
+const xss = require('xss');
+
 const tostring = Util.tostring;
 const random = Util.randomInt;
 
@@ -66,6 +68,11 @@ class Game extends ConnectionHandler {
     const parseWord = Util.parseWord;
     const removeWord = Util.removeWord;
     const p = this.player;
+
+    //sanitize
+    data = xss(data);
+    if (data=="") {return};
+    if (data==undefined) {return};
 
     // check if the player wants to repeat a command
     if (data === '/') data = this.lastcommand || 'look';

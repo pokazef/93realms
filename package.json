@@ -29,7 +29,8 @@
     "insort": "^0.4.0",
     "jsonfile": "^3.0.0",
     "string-width": "^2.1.1",
-    "sty": "^0.6.1"
+    "sty": "^0.6.1",
+    "xss": "^1.0.6"
   },
   "devDependencies": {
     "chai": "^4.0.1",
