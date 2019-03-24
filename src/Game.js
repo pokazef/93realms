@@ -1,5 +1,7 @@
 'use strict';
 
+var PVP=true;
+
 const Util = require('./Util');
 const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
   require('./Databases');
@@ -590,22 +592,29 @@ class Game extends ConnectionHandler {
       var msg = "<red><bold>You can't attack yet!</bold></red>"
       if (p.lastMessage!=msg) {
         p.sendString(msg);
-      };
-      return;
-    }
-
-    const enemy = p.room.findEnemy(enemyName);
-
-    if (enemy === 0) {
-      var msg = "<red><bold>You don't see that here!</bold></red>"
-      if (p.lastMessage!=msg) {
-        p.sendString(msg);
       };   
       return;
     }
 
     const seconds = Util.seconds;
-    const weapon = p.Weapon();
+    const weapon = p.Weapon();  
+
+    // PVP 1/2
+    if (enemyName.trim()!=""&&PVP) {
+      for (var i = 0; i < this.player.room.players.length; i++) {
+        if (this.player.room.players[i].id!=this.player.id) {
+          if (enemyName.toLowerCase().trim()==this.player.room.players[i].name.toLowerCase().trim()) {
+            ap = this.player.room.players[i];
+          };
+          
+        };
+      };
+    };
+    /*
+      // random player?
+      // p.room.players[random(0, p.room.players.length - 1)];
+    */
+    // PVP
 
     let damage;
     if (weapon === 0) {
@@ -618,7 +627,57 @@ class Game extends ConnectionHandler {
 
     const attr = p.GetAttr.bind(p);
     const A = Attribute;
+    
+
+    // PVP 2/2
+    if (ap!=undefined) {
+      var noAttack=false;
+      var temp=[1]
+       for (var i = 0; i < temp.length; i++) {
+         if (p.room.id==temp[i]) {
+            noAttack=true;
+         };
+       };
+       if (p.room.type.key!='PLAINROOM') {noAttack=true};
+        if (noAttack) {
+
+            var msg = "<red><bold>You can't attack players here!</bold></red>"
+            if (p.lastMessage!=msg) {
+              p.sendString(msg);
+            };
+            return;
+         };
+       if (random(0,99) >= attr(A.ACCURACY) - ap.attributes.DODGING) {
+          Game.sendRoom("<white>" + p.name + " swings at " + ap.name +
+                        " but misses!</white>", p.room);
+          return;
+        }   
+        damage += attr(A.STRIKEDAMAGE);
+        damage -= ap.attributes.DAMAGEABSORB;
+        if (damage < 1) damage = 1;
+        ap.addHitPoints(-damage);
+        Game.sendRoom("<green><bold>" + p.name + " hits " + ap.name + " for " +
+                  damage + " damage!</bold></green>", p.room);
+        ap.printStatbar();
+        if (ap.hitPoints <= 0) {
+          Game.playerKilled(ap);
+        }
+        return;
+    };
+    // PVP
+
+    const enemy = p.room.findEnemy(enemyName);
+
+    if (enemy === 0) {
+      var msg = "<red><bold>You don't see that here!</bold></red>"
+      if (p.lastMessage!=msg) {
+        p.sendString(msg);
+      };
+      return;
+    }
+
     const e = enemy.tp;
+
 
     if (random(0,99) >= attr(A.ACCURACY) - e.dodging) {
       Game.sendRoom("<white>" + p.name + " swings at " + e.name +
@@ -877,7 +936,7 @@ class Game extends ConnectionHandler {
         " editstats                  - Edit your statistics (TR)\r\n" +
         " list                       - Lists items in a store (ST)\r\n" +
         " buy/sell <item>            - Buy or Sell an item in a store (ST)\r\n" +
-        " attack <enemy>             - Attack an enemy\r\n</bold></white>";
+        " attack <enemy>             - Attack an enemy or a player\r\n</bold></white>";
 
       const god = "<yellow><bold>" +
         "--------------------------------- God Commands ---------------------------------\r\n" +
