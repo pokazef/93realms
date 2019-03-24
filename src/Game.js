@@ -41,7 +41,9 @@ class Game extends ConnectionHandler {
 
   enter() {
     this.lastCommand = "";
-
+    this.qState = -1; // ziad
+    this.qWord = -1; // word
+    this.lDir = 0; 
     const p = this.player;
     p.active = true;
     p.loggedIn = true;
@@ -84,6 +86,57 @@ class Game extends ConnectionHandler {
       return;
     }
     */
+
+    // ziad money
+    if (this.qState != -1){ 
+      var deta = data.toLowerCase();
+      if (deta == 'y' || deta == 'yes'){
+        p.money -= this.qState;
+        this.qState = -1;
+        p.sendString('<green>Purchase successful</green>');
+        this.move(this.lDir, true);
+        return;
+      }else if (deta == 'n' || deta == 'no'){
+        this.qState = -1;
+        p.sendString('<red>Purchase canceled</red>');
+        return;
+      }else{
+        this.qState = -1;
+        p.sendString('<red>Purchase canceled</red>');
+      } 
+    }
+
+    // word
+    if (this.qWord != -1){ 
+      var deta = data.toLowerCase();
+      if (deta == this.qWord){
+        this.qWord = -1;
+        p.sendString('<green>You can pass.</green>');
+        this.move(this.lDir, true);
+        return;
+      }else{
+        this.qWord = -1;
+        p.sendString('<red>That does not seem to work.</red>');
+      } 
+    }
+
+    // CONDITION
+    try {
+      if (roomDb.findById(p.room.id).condition!=undefined) {
+        var cWorking=false;
+        for (var j = 0; j < roomDb.findById(p.room.id).condition.length; j++) {
+
+          var cCond = roomDb.findById(p.room.id).condition[j].IF;
+          var cThen = roomDb.findById(p.room.id).condition[j].THEN;
+
+          if(eval(cCond)){eval(cThen);cWorking=true;}       
+        };
+        if (cWorking) {return};
+      };
+    }
+    catch(error) {
+      console.error(error);
+    }
 
     if (firstWord === "get" || firstWord === "take" || firstWord === "g") {
       this.getItem(removeWord(data, 0));
@@ -752,7 +805,7 @@ class Game extends ConnectionHandler {
     return false;
   }
 
-  move(dir) {
+  move(dir, force) { // ziad
     const p = this.player;
     if (!dir.hasOwnProperty('key')) {
       p.sendString("<red>Invalid direction!</red>");
@@ -765,6 +818,64 @@ class Game extends ConnectionHandler {
       Game.sendRoom("<red>" + p.name + " bumps into the wall to the " +
                     dir.key + "!!!</red>", p.room);
       return;
+    }
+
+    if (!force){
+      if (next.key){
+        if (next.key != {} && next.key != -1){
+          var key = next.key;
+          if (key.TYPE){
+            var type = key.TYPE.toLowerCase();
+            var keyText="";
+            if (key.TEXT!=undefined&&key.TEXT.trim()!="") {
+              keyText=key.TEXT.trim();
+            };
+            if (key.TYPE == "ITEM"){
+              if (key.ID){
+                if (itemDb.findById(key.ID)){
+                  let found = false;
+                  let name = itemDb.findById(key.ID).name;
+                  p.inventory.forEach((itm)=>{
+                    if (itm.name == name)found = true;
+                  });
+                  if (!found){
+                    if (keyText!="") {p.sendString(keyText)};
+                    return p.sendString(`<yellow>Can't enter without a <bold><yellow>${name}</yellow></bold></yellow>`);
+                  }
+                  p.sendString(`<green>You used your <bold><green>${name}</green></bold> to pass.</green>`);
+                }
+              }
+            }else if (key.TYPE == "MONEY"){
+              if (key.AMOUNT){
+                if (key.AMOUNT > p.money){
+                  if (keyText!="") {p.sendString(keyText)};
+                  return p.sendString(`<yellow>Can't enter without <bold><yellow>$${key.AMOUNT}</yellow></bold></yellow>`);
+                }
+                this.qState = key.AMOUNT; 
+                this.lDir = dir;
+                if (keyText!="") {p.sendString(keyText)};
+                return p.sendString(`<yellow>To enter this place, you need to pay <bold><yellow>$${key.AMOUNT}</yellow></bold>. [Yes/No]</yellow>`);
+              }
+            }else if (key.TYPE == "LEVEL"){
+              if (key.LEVEL){
+                if (p.level < key.LEVEL){
+                  if (keyText!="") {p.sendString(keyText)};
+                  return p.sendString(`<yellow>You need to be <bold><yellow>level ${key.LEVEL}</yellow></bold> to pass.</yellow>`)
+                }
+                p.sendString(`<green>You are experienced enough to pass.</green>`)
+              }
+            }else if (key.TYPE == "PASSWORD"){
+              if (key.PASSWORD){
+                if (keyText!="") {p.sendString(keyText)};
+                this.qWord = key.PASSWORD;
+                this.lDir = dir;
+                return p.sendString(`<yellow>You need a <bold><yellow>password</yellow></bold>.</yellow>`);
+              }
+            }
+
+          }
+        }
+      }
     }
 
     previous.removePlayer(p);

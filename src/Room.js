@@ -15,6 +15,7 @@ class Room extends Entity {
     this.rooms = this._initRooms();
     this.spawnWhich = 0;
     this.maxEnemies = 0;
+    this.key = -1; // ziad
 
     // -----------------------------------------
     //  volatile data (save to disk)
@@ -116,6 +117,8 @@ removeItem(item) {
     });
     this.spawnWhich = parseInt(templateObject["ENEMY"]);
     this.maxEnemies = parseInt(templateObject["MAXENEMIES"]);
+    this.key = templateObject["KEY"]; // ziad
+    this.condition = templateObject["CONDITION"] || []; // condition
   }
 
   loadData(dataObject, itemDb) {
