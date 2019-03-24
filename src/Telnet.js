@@ -1,6 +1,7 @@
 'use strict';
 
 const ansi = require('sty');
+ansi.enable();
 const { wrap } = require('./Util');
 
 const Telnet = {
