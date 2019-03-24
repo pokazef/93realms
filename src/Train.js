@@ -65,7 +65,7 @@ class Train extends ConnectionHandler {
       "<bold>" +
       "-------------------------------------------------------------------------------\r\n" +
       "Enter 1, 2, or 3 to add a stat point, or \"quit\" to enter the realm: " +
-      "</bold></white>";
+      "</bold></white>\n";
     this.connection.sendMessage(statsMsg);
   }
 

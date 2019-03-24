@@ -38,7 +38,7 @@ class Logon extends ConnectionHandler {
     //var loginScreen = ":3";
     const welcomeMsg = "<bold><red>Welcome to 93 Realms.</red></bold>\r\n" + loginScreen + '\r\n\r\n' +
                        `<cyan>${(a.length >= 1 ? `There ${a.length == 1 ? 'is' : 'are'} currently ${a.length} ${a.length == 1 ? 'player' : 'players'} online.\r\n<bold><cyan>${a.join(', ')}</cyan></bold>` : "There are no players online.")}</cyan>\r\n` +
-                       "<white>Please enter your name, or \"new\" if you are new: </white>";
+                       "<white>Please enter your name, or \"new\" if you are new. </white>\r\n";
     this.connection.sendMessage(welcomeMsg);
   }
 
@@ -51,7 +51,7 @@ class Logon extends ConnectionHandler {
     if (this.state === NEWCONNECTION) {
       if (data.toLowerCase() === 'new') {
         this.state = NEWUSER;
-        const msg = "<yellow>Please enter your desired name: </yellow>"
+        const msg = "<yellow>Please enter your desired name. </yellow>\r\n"
         this.connection.sendMessage(msg);
       } else { // existing user
         const player = playerDb.findByNameFull(data);
@@ -61,14 +61,14 @@ class Logon extends ConnectionHandler {
           msg = "<red><bold>Sorry, the user '<white>" +
                 data + "</white>' does not exist\r\n" +
                 "Please enter your name, or " +
-                "\"new\" if you are new: </bold></red>";
+                "\"new\" if you are new. </bold></red>\r\n";
         } else {
           this.state = ENTERPASS;
           this.name = data;
           this.password = player.password;
           msg = "<green><bold>Welcome, " +
                 "<white>" + data + "</white>\r\n" +
-                "Please enter your password: </bold></green>";
+                "Please enter your password. </bold></green>\r\n";
         }
         this.connection.sendMessage(msg);
       }
@@ -88,19 +88,19 @@ class Logon extends ConnectionHandler {
         this.numErrors++;
         msg = "<red><bold>Sorry, the name '<white>" + data +
               "</white>' has already been taken.\r\n" +
-              "<yellow>Please enter your desired name: " +
-              "</yellow></bold></red>";
+              "<yellow>Please enter your desired name. " +
+              "</yellow></bold></red>\r\n";
       } else {
         if (!this.acceptableName(data)) {
           this.numErrors++;
           msg = "<red><bold>Sorry, the name '<white>" + data +
                 "</white>' is unacceptible.\r\n" +
-                "<yellow>Please enter your desired name: " +
-                "</yellow></bold></red>";
+                "<yellow>Please enter your desired name. " +
+                "</yellow></bold></red>\r\n";
         } else {
           this.state = ENTERNEWPASS;
           this.name = data;
-          msg = "<green>Please enter your desired password: </green>";
+          msg = "<green>Please enter your desired password. </green>\r\n";
         }
       }
       this.connection.sendMessage(msg);
@@ -112,8 +112,8 @@ class Logon extends ConnectionHandler {
       if (!data || data.indexOf(' ') !== -1) {
         this.numErrors++;
         msg = "<bold><red>INVALID PASSWORD!</red>\r\n" +
-              "<green>Please enter your desired password: " +
-              "</green></bold>";
+              "<green>Please enter your desired password. " +
+              "</green></bold>\r\n";
         this.connection.sendMessage(msg);
         return;
       }
@@ -149,8 +149,8 @@ class Logon extends ConnectionHandler {
         this.goToGame(false);
       } else {
         msg = "<bold><red>INVALID PASSWORD!</red>\r\n" +
-              "<green>Please enter your password: " +
-              "</green></bold>";
+              "<green>Please enter your password. " +
+              "</green></bold>\r\n";
         this.connection.sendMessage(msg);
       }
       return;
@@ -193,7 +193,7 @@ class Logon extends ConnectionHandler {
   }
 
   _handleMaxErrors() {
-    this.connection.sendMessage("Too many incorrect reponses, closing connection...");
+    this.connection.sendMessage("Too many incorrect reponses, closing connection...\r\n");
     this.connection.close();
   }
 

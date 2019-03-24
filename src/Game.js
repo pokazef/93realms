@@ -883,7 +883,7 @@ class Game extends ConnectionHandler {
         "</bold></green>";
 
       const end =
-        "--------------------------------------------------------------------------------";
+        "--------------------------------------------------------------------------------\r\n";
 
       switch(rank) {
         case PlayerRank.REGULAR:
@@ -917,11 +917,11 @@ class Game extends ConnectionHandler {
   printExperience() {
     const p = this.player;
     return "<white><bold>" +
-      " Level:         " + p.level + "\r\n" +
+      "Level:         " + p.level + "\r\n" +
       " Experience:    " + p.experience + "/" +
       p.needForLevel(p.level + 1) + " (" +
       Math.round(100 * p.experience / p.needForLevel(p.level + 1)) +
-      "%)</bold></white>";
+      "%)</bold></white>\r\n";
   }
 
   printStats() {
@@ -943,7 +943,7 @@ class Game extends ConnectionHandler {
     " StatPoints:    " + tostring(p.statPoints, 16) +
     " Damage Absorb: " + tostring(attr(Attribute.DAMAGEABSORB)) + "\r\n" +
     "--------------------------------------------------------------------------------" +
-    "</bold></white>";
+    "</bold></white>\r\n";
     return str;
   }
 
@@ -977,7 +977,7 @@ class Game extends ConnectionHandler {
 
     itemList +=
         "\r\n--------------------------------------------------------------------------------" +
-        "</bold></white>";
+        "</bold></white>\r\n";
 
     return itemList;
   }
