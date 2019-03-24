@@ -268,7 +268,7 @@ class Player extends Entity {
     this.connection.sendMessage(str + '\r\n');
     this.lastMessage = str;
 
-    if (this.active) this.printStatbar();
+    //if (this.active) this.printStatbar();
   }
 
   // ------------------------------------------------------------------------
@@ -304,7 +304,16 @@ class Player extends Entity {
         color, this.hitPoints, color,
         this.GetAttr(Attribute.MAXHITPOINTS));
 
-    this.connection.sendMessage(statbar + '\r\n');
+    try{
+      if (this.hitPoints<this.GetAttr(Attribute.MAXHITPOINTS)) {
+        this.connection.sendMessage(statbar + '');
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+
+
   }
 
   load(dataObject, itemDb) {

@@ -738,7 +738,6 @@ class Game extends ConnectionHandler {
     // ------------------------------------------------------------------------
     //  Command not recognized, send to room
     // ------------------------------------------------------------------------
-    Game.sendRoom("<bold>" + p.name + " says: " + cc('dim') +
     /*
     var n=p.name;
     for (var i = n.length; i < 16; i++) {
@@ -746,6 +745,7 @@ class Game extends ConnectionHandler {
     };
     */
     
+    Game.sendRoom("<bold><cyan>" + p.name + " says:</cyan> " + cc('dim') +
                   data + "</bold>", p.room);
 
   }
@@ -804,7 +804,7 @@ class Game extends ConnectionHandler {
         p.addBonuses(item);
         p.addHitPoints(random(min, max));
         p.dropItem(index);
-        p.printStatbar();
+        if (p.hitPoints<p.GetAttr(Attribute.MAXHITPOINTS)) {p.printStatbar()}
         return true;
     }
 
@@ -1226,6 +1226,8 @@ class Game extends ConnectionHandler {
 
     Game.sendRoom("<red>" + e.name + " hits " + p.name + " for " +
                   damage + " damage!</red>", enemy.room);
+
+    p.printStatbar();
 
     if (p.hitPoints <= 0) {
       Game.playerKilled(p);
