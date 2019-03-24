@@ -264,7 +264,259 @@ class Game extends ConnectionHandler {
     }
 
 
-    if (firstWord === "map") {
+    //~ziad87 map
+    if (firstWord == 'map'){
+      var msg = '';
+      var oRoom = p.room  
+      var Chunks = [];
+      var lv1 = [];
+      function num2dir(n){
+        var dir;
+        if(n==0)dir = Direction.NORTH;
+        if(n==1)dir = Direction.EAST;
+        if(n==2)dir = Direction.SOUTH;
+        if(n==3)dir = Direction.WEST;
+        return dir;
+      }
+      function wordWrap(str, width, spaceReplacer) {
+        if (str.length>width) {
+            var p=width
+            for (;p>0 && str[p]!='';p--) {
+            }
+            if (p>0) {
+              var left = str.substring(0, p);
+              var right = str.substring(p+1);
+              return left + spaceReplacer + wordWrap(right, width, spaceReplacer);
+            }
+        }
+        return str;
+      }
+      var padEnd = (string, chars, filler)=>{
+        if (isNaN(chars))return null;
+        var str = string.substr(0, chars);
+        filler = filler.substr(0, 1);
+        if (str.length >= chars)return str;
+        var a = str.split('');
+        var left = chars-a.length;
+        for (var i=0; i<left; i++){
+          a.push(filler);
+        };
+        return a.join('');
+      }
+      for (var i=0;i<4; i++){
+        var dir = num2dir(i);
+        if (oRoom.rooms[dir]){
+          lv1.push({dir: dir, room: roomDb.findById(oRoom.rooms[dir])});
+        }else{lv1.push({dir: dir, room: false})}
+
+      }  
+      function makeChunk(room, x, y, current){
+        var chunk = {x: x, y: y};
+        var lines = [];
+        function doIt(){
+          var name = wordWrap(room.name, 9, '\n').split('\n');
+          var color1, color2;
+          if(!name[0]){name = ['', '', '']};
+          if(!name[1]){name.push('');name.push('')};
+          if(!name[2]){name.push('')};
+          /*
+          if (room.id == 1){
+            color1 = '<green>';
+            color2 = '</green>'
+          }
+          if (room.type == RoomType.STORE){
+            color1 = '<cyan>';
+            color2 = '</cyan>';
+          }
+          if (room.type == RoomType.TRAININGROOM){
+            color1 = '<magenta>';
+            color2 = '</magenta>';
+          }
+          */
+          /*
+          // bug
+          if (room.key){
+            if (room.key != -1 && room.key != {}){
+              console.log(room.key)
+              color1 = '<yellow>';
+              color2 = '</yellow>'
+              if (!current){
+                name = ["Locked", "", ""];
+              }
+            }
+          }  
+          */ 
+          var roomSpace = " ";
+          if (current){
+            color1 = '<bold><cyan>';
+            color2 = '</cyan></bold>';
+            roomSpace = '<bold><cyan>@</cyan></bold>'
+          }
+          lines.push(`<black>.</black>${room.rooms[Direction.NORTH] ? '<black>.</black>#<black>.</black>' : '<black>...</black>'}<black>.</black>`)
+          //lines.push(` ${color1 ? color1 : ''}###########${color2 ? color2 : ''} `);
+          lines.push('<black>.</black>+-+<black>.</black>');
+          //lines.push(` ${color1 ? color1 : ''}#${padEnd(name[0], 9, ' ')}#${color2 ? color2 : ''} `);
+          
+          //lines.push(`${room.rooms[Direction.WEST] ? '-' : ' '}${color1 ? color1 : ''}#${padEnd(name[1], 9, ' ')}#${color2 ? color2 : ''}${room.rooms[Direction.EAST] ? '-' : ' '}`);
+            
+          var dW = '<black>.</black>';
+          var dE = '<black>.</black>';
+          if (room.rooms[Direction.WEST]!=0) {dW='#'};
+          if (room.rooms[Direction.EAST]!=0) {dE='#'};
+          lines.push(dW+'|'+roomSpace+'|'+dE);
+          //lines.push(`${room.rooms[Direction.WEST] ? '-' : ' '}+'| |'+${room.rooms[Direction.EAST] ? '-' : ' '}`);
+          //lines.push(` ${color1 ? color1 : ''}#${padEnd(name[2], 9, ' ')}#${color2 ? color2 : ''} `)
+          //lines.push(` ${color1 ? color1 : ''}###########${color2 ? color2 : ''} `);
+          lines.push('<black>.</black>+-+<black>.</black>');
+          lines.push(`<black>.</black>${room.rooms[Direction.SOUTH] ? '<black>.</black>#<black>.</black>' : '<black>...</black>'}<black>.</black>`)
+          
+          //lines.push(`[ ]`);
+        }
+        function dont(){
+          for (var i=0;i<7;i++){
+            lines.push('<black>.....</black>')
+          }
+        }
+        if(room){doIt()}else{dont()}
+        chunk.lines = lines;
+        return chunk;
+      }
+      var lv2 = {};
+      Chunks.push(makeChunk(oRoom, 3, 3, true));
+      lv1.forEach((room)=>{
+        if (room.room){
+          if(room.dir.key == 'NORTH'){
+            Chunks.push(makeChunk(room.room, 3, 2, false));
+            lv2[room.room.id] = [];
+            for (var i=0;i<4; i++){
+              var dir = num2dir(i);
+              if (room.room.rooms[dir]){
+                if (!room.room.key || room.room.key == {} || room.room.key == -1){
+                  lv2[room.room.id].push({oDir: room.dir.key, dir: dir, room: roomDb.findById(room.room.rooms[dir])});
+                }
+              }else{lv2[room.room.id].push({dir: dir, room: false})}
+            }
+          }
+          if(room.dir.key == 'SOUTH'){
+            Chunks.push(makeChunk(room.room, 3, 4, false));
+            lv2[room.room.id] = [];
+            for (var i=0;i<4; i++){
+              var dir = num2dir(i);
+              if (room.room.rooms[dir]){
+                if (!room.room.key || room.room.key == {} || room.room.key == -1){
+                  lv2[room.room.id].push({oDir: room.dir.key, dir: dir, room: roomDb.findById(room.room.rooms[dir])});
+                }
+              }else{lv2[room.room.id].push({dir: dir, room: false})}
+            }
+          }
+          if(room.dir.key == 'WEST'){
+            Chunks.push(makeChunk(room.room, 2, 3, false));
+            lv2[room.room.id] = [];
+            for (var i=0;i<4; i++){
+              var dir = num2dir(i);
+              if (room.room.rooms[dir]){
+                if (!room.room.key || room.room.key == {} || room.room.key == -1){
+                  lv2[room.room.id].push({oDir: room.dir.key, dir: dir, room: roomDb.findById(room.room.rooms[dir])});
+                }
+              }else{lv2[room.room.id].push({dir: dir, room: false})}
+            }
+          }
+          if(room.dir.key == 'EAST'){
+            Chunks.push(makeChunk(room.room, 4, 3, false));
+            lv2[room.room.id] = [];
+            for (var i=0;i<4; i++){
+              var dir = num2dir(i);
+              if (room.room.rooms[dir]){
+                if (!room.room.key || room.room.key == {} || room.room.key == -1){
+                  lv2[room.room.id].push({oDir: room.dir.key, dir: dir, room: roomDb.findById(room.room.rooms[dir])});
+                }
+              }else{lv2[room.room.id].push({dir: dir, room: false})}
+            }
+          }
+        }
+      })
+      for (var key in lv2){
+        var arr = lv2[key];
+        arr.forEach((room)=>{
+          if (room.oDir == 'NORTH'){
+            if (room.dir.key == 'NORTH'){
+               Chunks.push(makeChunk(room.room, 3, 1, false));
+            }
+            if (room.dir.key == 'EAST'){
+               Chunks.push(makeChunk(room.room, 4, 2, false));
+            }
+            if (room.dir.key == 'WEST'){
+               Chunks.push(makeChunk(room.room, 2, 2, false));
+            }
+          }
+          if (room.oDir == 'SOUTH'){
+            if (room.dir.key == 'SOUTH'){
+               Chunks.push(makeChunk(room.room, 3, 5, false));
+            }
+            if (room.dir.key == 'EAST'){
+               Chunks.push(makeChunk(room.room, 4, 4, false));
+            }
+            if (room.dir.key == 'WEST'){
+               Chunks.push(makeChunk(room.room, 2, 4, false));
+            }
+          }
+          if (room.oDir == 'EAST'){
+            if (room.dir.key == 'EAST'){
+               Chunks.push(makeChunk(room.room, 5, 3, false));
+            }
+            if (room.dir.key == 'SOUTH'){
+               Chunks.push(makeChunk(room.room, 4, 4, false));
+            }
+            if (room.dir.key == 'NORTH'){
+               Chunks.push(makeChunk(room.room, 4, 2, false));
+            }
+          }
+          if (room.oDir == 'WEST'){
+            if (room.dir.key == 'WEST'){
+               Chunks.push(makeChunk(room.room, 1, 3, false));
+            }
+            if (room.dir.key == 'SOUTH'){
+               Chunks.push(makeChunk(room.room, 2, 4, false));
+            }
+            if (room.dir.key == 'NORTH'){
+               Chunks.push(makeChunk(room.room, 2, 2, false));
+            }
+          }
+        });
+      }
+      var chk = {};
+      Chunks.forEach((chunk)=>{
+        chk[[chunk.x, chunk.y]] = chunk;
+      });
+      for (var x=1; x<6; x++){
+        for (var y=1; y<6; y++){
+          if (!chk[[x, y]]){
+            chk[[x, y]] = makeChunk(false, x, y, false);
+          }
+        }
+      }
+      var lines = [];
+                                                          
+      for (var y=1; y<5; y++){
+        for (var l=0; l<5; l++){
+          var a = `${chk[[1, y]].lines[l]}${chk[[2, y]].lines[l]}${chk[[3, y]].lines[l]}${chk[[4, y]].lines[l]}${chk[[5, y]].lines[l]}`;
+          //if (a != `                                                                 `){
+            lines.push(a);
+          //}
+        }
+      }
+      p.sendString(lines.join('\n'));
+      return;
+      //wow such code
+      //idk why i wrote this
+      //but it worke (TM)
+    }
+    //// 
+
+
+    /* map wip obsolete */
+    
+    if (firstWord === "map2") {
 
       var tempMap=[
         [['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>']],
