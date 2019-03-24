@@ -1050,6 +1050,7 @@ class Game extends ConnectionHandler {
     const i = p.inventory[index];
     if (!s.findItem(i.name)) {
       p.sendString("<red><bold>Sorry, we don't want that item!</bold></red>");
+      return;
     }
     /*
     if (itemName==p.weapon) {
