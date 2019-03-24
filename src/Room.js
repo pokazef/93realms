@@ -56,8 +56,16 @@ class Room extends Entity {
     this.items.push(item);
   }
 
-  removeItem(item) {
-    this.items = this.items.filter(i => i !== item);
+removeItem(item) {
+    // fix: remove only one item
+    for (var i = 0; i < this.items.length; i++) {
+     if (item==this.items[i]) {
+      this.items.splice(i, 1);
+      return;
+     };
+    };
+    // old, remove all items
+    //this.items = this.items.filter(i => i !== item);
   }
 
   findItem(itemName) {
