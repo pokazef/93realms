@@ -44,6 +44,7 @@ class Game extends ConnectionHandler {
     p.active = true;
     p.loggedIn = true;
     p.nextAttackTime = 0;
+    p.lastMessage = "";
     // p.room is initially a room id when Player object
     // first initialized -- so converting to actual
     // room object here
@@ -585,14 +586,21 @@ class Game extends ConnectionHandler {
     const now = timer.getMS();
 
     if (now < p.nextAttackTime) {
-      p.sendString("<red><bold>You can't attack yet!</bold></red>");
+
+      var msg = "<red><bold>You can't attack yet!</bold></red>"
+      if (p.lastMessage!=msg) {
+        p.sendString(msg);
+      };
       return;
     }
 
     const enemy = p.room.findEnemy(enemyName);
 
     if (enemy === 0) {
-      p.sendString("<red><bold>You don't see that here!</bold></red>");
+      var msg = "<red><bold>You don't see that here!</bold></red>"
+      if (p.lastMessage!=msg) {
+        p.sendString(msg);
+      };   
       return;
     }
 

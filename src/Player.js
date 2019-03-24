@@ -241,6 +241,7 @@ class Player extends Entity {
 
     // send the string, newline included.
     this.connection.sendMessage(str + '\r\n');
+    this.lastMessage = str;
 
     if (this.active) this.printStatbar();
   }
