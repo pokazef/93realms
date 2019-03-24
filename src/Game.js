@@ -621,7 +621,12 @@ class Game extends ConnectionHandler {
       damage = random(1, 3);
       p.nextAttackTime = now + seconds(1);
     } else {
-      damage = random(weapon.min, weapon.max);
+      if (weapon!=undefined) {
+        damage = random(weapon.min, weapon.max);        
+      }else{
+        //fix
+        damage = 1;
+      }
       p.nextAttackTime = now + seconds(weapon.speed);
     }
 
