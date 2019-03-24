@@ -21,7 +21,7 @@ class Train extends ConnectionHandler {
     const p = this.player;
     if (p.newbie) {
       const welcomeMsg =
-        "<magenta><bold>Welcome to SimpleMUD, " + p.name + "!</bold>\r\n" +
+        "<magenta><bold>Welcome to 93 Realms, " + p.name + "!</bold>\r\n" +
         "You must train your character with your desired stats,\r\n" +
         "before you enter the realm.</magenta>\r\n\r\n" ;
       this.connection.sendMessage(welcomeMsg);
