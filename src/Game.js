@@ -948,7 +948,7 @@ class Game extends ConnectionHandler {
     if (item[0] === '$') {
 
       // clear off the '$', and convert the result into a number.
-      const money = parseInt(item.substr(1, item.length - 1));
+      const money = Math.abs( parseInt(item.substr(1, item.length - 1)) );
       if (!isNaN(money)) { // if valid money amount
         // make sure there's enough money in the room
         if (money > p.room.money) {
@@ -985,7 +985,7 @@ class Game extends ConnectionHandler {
 
     if (item[0] === '$') {
       // clear off the '$', and convert the result into a number.
-      const money = parseInt(item.substr(1, item.length - 1));
+      const money = Math.abs( parseInt(item.substr(1, item.length - 1))  );
       if (!isNaN(money)) { // if valid money amount
         // make sure there's enough money in the room
         if (money > p.money) {
