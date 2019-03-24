@@ -169,17 +169,39 @@ class Player extends Entity {
 
   dropItem(index) {
     if (this.inventory[index] !== 0) {
-
+      // fix that MUD
+      var wp="";
+      var ar="";
+      /*
+      console.log(this.Weapon().name)
+      console.log(this.Armor().name)
+      */
+      if(this.Weapon().name!=undefined){wp=this.Weapon().name;}
+      if(this.Armor().name!=undefined){ar=this.Armor().name;}
       if (this.weapon === index) {
         this.removeWeapon();
+        wp="";
       }
       if(this.armor === index) {
         this.removeArmor();
+        ar="";
       }
       //
       this.inventory =
         this.inventory.filter((o, i) => i !== index);
       this.items--;
+      
+      // FUUUUUUUUU
+      if (wp!="") {
+        this.weapon = this.getItemIndex(wp);
+      };
+      if (ar!="") { 
+        this.armor = this.getItemIndex(ar);
+      }
+      
+      
+      //this.recalculateStats();
+
 
       return true;
     }
