@@ -32,6 +32,7 @@ class Player extends Entity {
     this.attributes = this._initAttributes();
 
     this.inventory = [];
+    this.quests = [];
     this.items = 0;
     this.weapon = -1;
     this.armor = -1;
@@ -247,6 +248,20 @@ class Player extends Entity {
   }
 
   // ------------------------------------------------------------------------
+  //  Quest check / add
+  // ------------------------------------------------------------------------
+
+  quest(search) {
+    var gotQuest = (this.quests.indexOf(search) >= 0)
+    if (gotQuest){
+      return false;
+    }else{
+      this.quests.push(search);
+      return true;
+    }
+  }  
+
+  // ------------------------------------------------------------------------
   //  This prints up the players "statbar", ie: his hitpoints.
   // ------------------------------------------------------------------------
   printStatbar() {
@@ -292,6 +307,7 @@ class Player extends Entity {
       this.inventory.push(itemDb.findById(id));
       this.items++;
     });
+    this.quests = dataObject["QUESTS"] || [];
     this.weapon = parse("WEAPON");
     this.armor = parse("ARMOR");
 
@@ -322,6 +338,7 @@ class Player extends Entity {
       "DAMAGEABSORB": attr[Attribute.DAMAGEABSORB],
       "HPREGEN": attr[Attribute.HPREGEN],
       "INVENTORY": this.inventory.map(item => item.id).join(' '),
+      "QUESTS": this.quests,
       "WEAPON": this.weapon,
       "ARMOR": this.armor
     }

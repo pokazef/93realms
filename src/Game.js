@@ -290,6 +290,18 @@ class Game extends ConnectionHandler {
       return;
     }
 
+    if (firstWord === "quests" || firstWord === "quest") {
+      var questsMsg="";
+      for (var i = 0; i < p.quests.length; i++) {
+        questsMsg=questsMsg+p.quests[i].charAt(0).toUpperCase()+p.quests[i].slice(1)+', ';
+      };
+      questsMsg=questsMsg.slice(0, -2)+'.';
+      if (p.quests.length==0) {questsMsg="You didn't achieve any quests."};
+
+      p.sendString("Achieved Quests: "+questsMsg);
+      return;
+    }
+
     if (firstWord === "run") {
       var runStr = removeWord(data, 0);
       var runPat = runStr.match(/[a-z]+|[^a-z]+/gi);
@@ -1367,6 +1379,7 @@ class Game extends ConnectionHandler {
         " quit                       - Allows you to leave the realm.\r\n" +
         " remove <'weapon'/'armor'>  - removes your weapon or armor\r\n" +
         " stats                      - Shows all of your statistics\r\n" +
+        " quests                     - Shows your achieved quests\r\n" +
         " time                       - shows the current system time.\r\n" +
         " use <item>                 - use an item in your inventory\r\n" +
         " whisper <who> <msg>        - Sends message to one person\r\n" +
