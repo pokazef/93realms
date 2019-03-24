@@ -78,6 +78,12 @@ class Logon extends ConnectionHandler {
     if (this.state === NEWUSER) {
       let msg;
       // check if the name is taken
+
+      // sanitize //
+      data = data.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"");
+      data.trim();
+      //////////////
+
       if (playerDb.hasNameFull(data)) {
         this.numErrors++;
         msg = "<red><bold>Sorry, the name '<white>" + data +
