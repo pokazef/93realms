@@ -73,12 +73,14 @@ class Game extends ConnectionHandler {
     //  REGULAR access commands
     // ------------------------------------------------------------------------
 
+    /*
     if (firstWord === "chat" || firstWord === ':') {
       const text = removeWord(data, 0);
       Game.sendGame(
         `<white><bold>${p.name} chats: ${text}</bold></white>`);
       return;
     }
+    */
 
     if (firstWord === "experience" || firstWord === "exp") {
       p.sendString(this.printExperience());
@@ -848,7 +850,7 @@ class Game extends ConnectionHandler {
     const help = "<white><bold>" +
         "--------------------------------- Command List ---------------------------------\r\n" +
         " /                          - Repeats your last command exactly.\r\n" +
-        " chat <mesg>                - Sends message to everyone in the game\r\n" +
+        /*" chat <mesg>                - Sends message to everyone in the game\r\n" +*/
         " experience                 - Shows your experience statistics\r\n" +
         " help                       - Shows this menu\r\n" +
         " inventory                  - Shows a list of your items\r\n" +
