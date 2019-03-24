@@ -1,6 +1,6 @@
 'use trict';
 
-const Enum = require('enum');
+const Enum = require('enum');
 
 const Attribute = new Enum({
   'STRENGTH'        : 0,

@@ -24,7 +24,7 @@ class PlayerDatabase extends EntityDatabase {
       player.id = ++index;
       this.savePlayer(player);
     }
-    jsonfile.writeFileSync(file, dataArray, {spaces: 2});
+    jsonfile.writeFileSync(file, dataArray, {spaces: 2});
     return true;
   }
 
