@@ -112,8 +112,10 @@ class GameLoop {
   performHeal() {
     for (let p of DB.playerDb.map.values()) {
       if (p.active) {
-        p.addHitPoints(p.GetAttr(Attribute.HPREGEN));
-        p.printStatbar();
+        if (p.hitPoints<p.GetAttr(Attribute.MAXHITPOINTS)) {
+          p.addHitPoints(p.GetAttr(Attribute.HPREGEN));
+          p.printStatbar();
+        }
       }
     }
   }
