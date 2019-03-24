@@ -1279,6 +1279,14 @@ class Game extends ConnectionHandler {
                   " appears out of nowhere!!</bold></white>", p.room);
   }
 
+  static playerTele(player,dest) {
+    const p = player;
+    p.room.removePlayer(p);
+    p.room = roomDb.findById(dest);
+    p.room.addPlayer(p);
+    p.sendString(Game.printRoom(p.room));
+  }
+
   static enemyKilled(enemy, player) {
     const e = enemy.tp;
     const p = player;
