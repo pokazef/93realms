@@ -30,6 +30,7 @@ author of _MUD Game Programming_ book.
     $ git clone https://github.com/lnguyenfx/simplemud.git
     $ cd simplemud
     $ npm install
+    $ cp -R data_templates data
     $ npm start <port>
 
 ## To Run Client
