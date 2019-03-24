@@ -965,11 +965,11 @@ class Game extends ConnectionHandler {
 
     // Weapon/Armor
     itemList += " Weapon: ";
-    if (p.Weapon() === 0) itemList += "NONE!";
+    if (p.Weapon() === 0 || p.Weapon().name == undefined) itemList += "NONE!";
     else itemList += p.Weapon().name;
 
     itemList += "\r\n Armor:  ";
-    if (p.Armor() === 0) itemList += "NONE!";
+    if (p.Armor() === 0 || p.Armor().name == undefined ) itemList += "NONE!";
     else itemList += p.Armor().name;
 
     // Money
