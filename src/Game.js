@@ -970,23 +970,23 @@ class Game extends ConnectionHandler {
      // console.log(p.inventory);
 
 
-    // Weapon/Armor
-    itemList += " Weapon: ";
-    if (p.Weapon() === 0 || p.Weapon().name == undefined) itemList += "NONE!";
-    else itemList += p.Weapon().name;
-
-    itemList += "\r\n Armor:  ";
-    if (p.Armor() === 0 || p.Armor().name == undefined ) itemList += "NONE!";
-    else itemList += p.Armor().name;
-
-    // Money
-    itemList += "\r\n Money:  $" + p.money;
-
-    itemList +=
-        "\r\n--------------------------------------------------------------------------------" +
-        "</bold></white>\r\n";
-
-    return itemList;
+      // Weapon/Armor
+      itemList += " Weapon: ";
+      if (p.Weapon() === 0 || p.Weapon().name == undefined) itemList += "NONE!";
+      else itemList += p.Weapon().name;
+  
+      itemList += "\r\n Armor:  ";
+      if (p.Armor() === 0 || p.Armor().name == undefined ) itemList += "NONE!";
+      else itemList += p.Armor().name;
+  
+      // Money
+      itemList += "\r\n Money:  $" + p.money;
+  
+      itemList +=
+          "\r\n--------------------------------------------------------------------------------" +
+          "</bold></white>\r\n";
+  
+      return itemList;
 
     }
     catch(error) {
