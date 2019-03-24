@@ -623,8 +623,8 @@ class Game extends ConnectionHandler {
 
     enemy.hitPoints -= damage;
 
-    Game.sendRoom("<red>" + p.name + " hits " + e.name + " for " +
-                  damage + " damage!</red>", p.room);
+    Game.sendRoom("<green><bold>" + p.name + " hits " + e.name + " for " +
+                  damage + " damage!</bold></green>", p.room);
 
     if (enemy.hitPoints <= 0) {
       Game.enemyKilled(enemy, p);
