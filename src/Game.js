@@ -848,6 +848,11 @@ class Game extends ConnectionHandler {
 
       Game.sendRoom("<red>" + p.name + " bumps into the wall to the " +
                     dir.key + "!!!</red>", p.room);
+      p.addHitPoints(-1);
+      p.printStatbar();
+      if (p.hitPoints <= 0) {
+        Game.playerKilled(p);
+      }
       return;
     }
 
