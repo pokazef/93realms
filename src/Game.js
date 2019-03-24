@@ -412,11 +412,13 @@ class Game extends ConnectionHandler {
     typeName = typeName.toLowerCase();
 
     if (typeName === "weapon" && p.Weapon() !== 0) {
+      p.sendString("<green><bold>"+p.name+" disarms "+p.Weapon().name+"</bold></green>");
       p.removeWeapon();
       return true;
     }
 
     if (typeName === "armor" && p.Armor() !== 0) {
+      p.sendString("<green><bold>"+p.name+" takes off "+p.Armor().name+"</bold></green>");
       p.removeArmor();
       return true;
     }
