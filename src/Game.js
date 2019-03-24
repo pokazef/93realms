@@ -82,7 +82,20 @@ class Game extends ConnectionHandler {
     }
     */
 
-    if (firstWord === "experience" || firstWord === "exp") {
+    if (firstWord === "get" || firstWord === "take" || firstWord === "g") {
+      this.getItem(removeWord(data, 0));
+      return;
+    }
+
+    if (firstWord === "whisper") {
+      // get the players name
+      const name = parseWord(data, 1);
+      const message = removeWord(removeWord(data, 0), 0);
+      this.whisper(message, name);
+      return;
+    }
+
+    if (firstWord === "experience" || firstWord === "exp" || firstWord === "xp") {
       p.sendString(this.printExperience());
       return;
     }
@@ -129,14 +142,6 @@ class Game extends ConnectionHandler {
       return;
     }
 
-    if (firstWord === "whisper") {
-      // get the players name
-      const name = parseWord(data, 1);
-      const message = removeWord(removeWord(data, 0), 0);
-      this.whisper(message, name);
-      return;
-    }
-
     if (firstWord === "who") {
       p.sendString(Game.whoList(
         parseWord(data, 1).toLowerCase()));
@@ -165,11 +170,6 @@ class Game extends ConnectionHandler {
 
     if (firstWord === "west" || firstWord === "w") {
       this.move(Direction.WEST);
-      return;
-    }
-
-    if (firstWord === "get" || firstWord === "take") {
-      this.getItem(removeWord(data, 0));
       return;
     }
 
