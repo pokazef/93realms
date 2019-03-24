@@ -963,6 +963,13 @@ class Game extends ConnectionHandler {
     itemList = itemList.slice(0, -2);
     itemList += "\r\n";
 
+
+    try {
+
+
+     // console.log(p.inventory);
+
+
     // Weapon/Armor
     itemList += " Weapon: ";
     if (p.Weapon() === 0 || p.Weapon().name == undefined) itemList += "NONE!";
@@ -980,6 +987,14 @@ class Game extends ConnectionHandler {
         "</bold></white>\r\n";
 
     return itemList;
+
+    }
+    catch(error) {
+      console.error(error);
+
+    }
+
+
   }
 
   static printRoom(room) {
