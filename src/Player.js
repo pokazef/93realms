@@ -173,11 +173,10 @@ class Player extends Entity {
       if (this.weapon === index) {
         this.removeWeapon();
       }
-
       if(this.armor === index) {
         this.removeArmor();
       }
-
+      //
       this.inventory =
         this.inventory.filter((o, i) => i !== index);
       this.items--;
@@ -234,11 +233,14 @@ class Player extends Entity {
   //  This sends a string to the players connection.
   // ------------------------------------------------------------------------
   sendString(str) {
+
     if (this.connection === 0) {
       console.error("Trying to send string to player " +
                     this.name + " but player is not connected.");
       return;
     }
+
+
 
     // send the string, newline included.
     this.connection.sendMessage(str + '\r\n');

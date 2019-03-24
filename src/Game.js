@@ -65,6 +65,7 @@ class Game extends ConnectionHandler {
   }
 
   handle(data) {
+
     const parseWord = Util.parseWord;
     const removeWord = Util.removeWord;
     const p = this.player;
@@ -738,6 +739,13 @@ class Game extends ConnectionHandler {
     //  Command not recognized, send to room
     // ------------------------------------------------------------------------
     Game.sendRoom("<bold>" + p.name + " says: " + cc('dim') +
+    /*
+    var n=p.name;
+    for (var i = n.length; i < 16; i++) {
+      n="."+n;
+    };
+    */
+    
                   data + "</bold>", p.room);
 
   }
@@ -834,6 +842,10 @@ class Game extends ConnectionHandler {
     const previous = p.room;
 
     if (!next) {
+      //
+
+
+
       Game.sendRoom("<red>" + p.name + " bumps into the wall to the " +
                     dir.key + "!!!</red>", p.room);
       return;
@@ -928,8 +940,8 @@ class Game extends ConnectionHandler {
 
   getItem(item) {
     const p = this.player;
-
     if (item[0] === '$') {
+
       // clear off the '$', and convert the result into a number.
       const money = parseInt(item.substr(1, item.length - 1));
       if (!isNaN(money)) { // if valid money amount
@@ -1034,6 +1046,14 @@ class Game extends ConnectionHandler {
     if (!s.findItem(i.name)) {
       p.sendString("<red><bold>Sorry, we don't want that item!</bold></red>");
     }
+    /*
+    if (itemName==p.weapon) {
+      removeWeapon();
+    };
+    if (itemName==p.armor) {
+      removeArmor();
+    };
+    */
     p.dropItem(index);
     p.money += i.price;
     Game.sendRoom("<cyan><bold>" + p.name + " sells a " +
@@ -1041,8 +1061,10 @@ class Game extends ConnectionHandler {
   }
 
   playerAttack(enemyName) {
+
     const p = this.player;
     const now = timer.getMS();
+    var ap;
 
     if (now < p.nextAttackTime) {
 
@@ -1507,18 +1529,18 @@ class Game extends ConnectionHandler {
       itemList += " Weapon: ";
       if (p.Weapon() === 0 || p.Weapon().name == undefined) itemList += "NONE!";
       else itemList += p.Weapon().name;
-  
+
       itemList += "\r\n Armor:  ";
       if (p.Armor() === 0 || p.Armor().name == undefined ) itemList += "NONE!";
       else itemList += p.Armor().name;
-  
+
       // Money
       itemList += "\r\n Money:  $" + p.money;
-  
+
       itemList +=
           "\r\n--------------------------------------------------------------------------------" +
           "</bold></white>\r\n";
-  
+
       return itemList;
 
     }
