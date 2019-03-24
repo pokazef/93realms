@@ -264,6 +264,52 @@ class Game extends ConnectionHandler {
     }
 
 
+    if (firstWord === "map") {
+
+      var tempMap=[
+        [['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>']],
+        [['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>']],
+        [['<black>...</black>'],['<black>...</black>'],['|<cyan>@</cyan>|'],['<black>...</black>'],['<black>...</black>']],
+        [['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>']],
+        [['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>']]
+      ]
+      var pPos=[2,2];
+
+      //console.log(map)
+
+      //level1
+      if (p.room.rooms.NORTH!=0) { 
+        tempMap[pPos[0]-1][pPos[1]]='|_|'
+      
+      };
+      if (p.room.rooms.SOUTH!=0) { tempMap[pPos[0]+1][pPos[1]]='|_|'
+
+      };
+      if (p.room.rooms.EAST!=0) { tempMap[pPos[0]][pPos[1]+1]='|_|'
+
+      };
+      if (p.room.rooms.WEST!=0) { tempMap[pPos[0]][pPos[1]-1]='|_|'
+
+      };
+
+      var tempMapRenderer = "";
+      for (var y = 0; y < tempMap.length; y++) {
+        for (var x = 0; x < tempMap[y].length; x++) {
+          tempMapRenderer+=tempMap[y][x];
+        };
+        tempMapRenderer+='\n'
+      };
+
+      p.sendString(tempMapRenderer);
+      console.log(tempMapRenderer)
+
+      return;
+
+
+
+    }
+    
+
     // ------------------------------------------------------------------------
     //  GOD access commands
     // ------------------------------------------------------------------------
