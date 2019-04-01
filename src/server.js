@@ -1,6 +1,6 @@
 'use strict';
 
-const port = parseInt(process.argv[2]) || 3000;
+const port = parseInt(process.argv[2]) || 8082;
 
 const net = require('net');
 
