@@ -319,6 +319,7 @@ class Game extends ConnectionHandler {
         p.sendString('<red>Your run pattern is invalid.</red>');
         return;
       }
+      if (!Array.isArray(runPat)) {inValidRun();return;}
       for (var r = 0; r < runPat.length; r++) {if (isNaN(runPat[r]) && runPat[r].length>1) {inValidRun();return;}}
       if ( isNaN(runPat[0]) || isNaN(runPat[runPat.length-1])==false || (runPat.length % 2)==1 )  {inValidRun();return;}
       var vds=['n','s','e','w'];
