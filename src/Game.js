@@ -772,6 +772,7 @@ class Game extends ConnectionHandler {
     const p = this.player;
     if (p.level >= minlevel)
     Game.logoutMessage(`${p.name} has suddenly disappeared from the realm.`);
+    this.connection.close();
   }
 
   goToTrain() {
