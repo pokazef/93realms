@@ -1,6 +1,7 @@
 'use strict';
 
 var PVP=true;
+var minlevel=3;
 
 const Util = require('./Util');
 const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
@@ -57,6 +58,7 @@ class Game extends ConnectionHandler {
     if (!isNaN(p.room)) p.room = roomDb.findById(p.room);
     p.room.addPlayer(p);
 
+    if (p.level >= minlevel)
     Game.sendGame("<bold><green>" + p.name +
       " has entered the realm.</green></bold>");
 
@@ -176,6 +178,7 @@ class Game extends ConnectionHandler {
 
     if (firstWord === "quit") {
       this.connection.close();
+      if (p.level >= minlevel)
       Game.logoutMessage(p.name + " has left the realm.");
       return;
     }
@@ -767,12 +770,14 @@ class Game extends ConnectionHandler {
   // ------------------------------------------------------------------------
   hungup() {
     const p = this.player;
+    if (p.level >= minlevel)
     Game.logoutMessage(`${p.name} has suddenly disappeared from the realm.`);
   }
 
   goToTrain() {
     const conn = this.connection;
     const p = this.player;
+    if (p.level >= minlevel)
     Game.logoutMessage(p.name + " leaves to edit stats");
     conn.addHandler(new Train(conn, p));
   }
