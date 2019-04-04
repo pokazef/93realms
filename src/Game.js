@@ -327,6 +327,7 @@ class Game extends ConnectionHandler {
       if ( isNaN(runPat[0]) || isNaN(runPat[runPat.length-1])==false || (runPat.length % 2)==1 )  {inValidRun();return;}
       var vds=['n','s','e','w'];
       for (var r = 0; r < runPat.length; r=r+2) {if (vds.includes(runPat[r+1])==false) {inValidRun();return;}}
+      for (var r = 0; r < runPat.length; r=r+2) {if (runPat[r] > 30) {inValidRun();return;}}
       var diz=this;
       function runTimeout(ri,st){
         setTimeout(function() { 
