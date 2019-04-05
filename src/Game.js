@@ -58,9 +58,11 @@ class Game extends ConnectionHandler {
     if (!isNaN(p.room)) p.room = roomDb.findById(p.room);
     p.room.addPlayer(p);
 
+    var msg = "<bold><green>" + p.name + " has entered the realm.</green></bold>";
     if (p.level >= minlevel)
-    Game.sendGame("<bold><green>" + p.name +
-      " has entered the realm.</green></bold>");
+      Game.sendGame(msg);
+    else
+      Game.sendRoom(msg, p.room);
 
     if (p.newbie) this.goToTrain();
     else p.sendString(Game.printRoom(p.room));
@@ -178,8 +180,7 @@ class Game extends ConnectionHandler {
 
     if (firstWord === "quit") {
       this.connection.close();
-      if (p.level >= minlevel)
-      Game.logoutMessage(p.name + " has left the realm.");
+      Game.logoutMessage(p.name + " has left the realm.", p);
       return;
     }
 
@@ -665,8 +666,9 @@ class Game extends ConnectionHandler {
       }
 
       target.connection.close();
+      p.sendString("<cyan><bold>You kick " + target.name + " out of the realm</bold></cyan>");
       Game.logoutMessage(target.name +
-        " has been kicked by " + p.name + "!!!");
+        " has been kicked by " + p.name + "!!!", target);
       return;
     }
 
@@ -771,16 +773,14 @@ class Game extends ConnectionHandler {
   // ------------------------------------------------------------------------
   hungup() {
     const p = this.player;
-    if (p.level >= minlevel)
-    Game.logoutMessage(`${p.name} has suddenly disappeared from the realm.`);
+    Game.logoutMessage(`${p.name} has suddenly disappeared from the realm.`, p);
     this.connection.close();
   }
 
   goToTrain() {
     const conn = this.connection;
     const p = this.player;
-    if (p.level >= minlevel)
-    Game.logoutMessage(p.name + " leaves to edit stats");
+    Game.logoutMessage(p.name + " leaves to edit stats", p);
     conn.addHandler(new Train(conn, p));
   }
 
@@ -1352,8 +1352,12 @@ class Game extends ConnectionHandler {
     }
   }
 
-  static logoutMessage(reason) {
-    Game.sendGame("<red><bold>" + reason + "</bold></red>");
+  static logoutMessage(reason, player) {
+    var msg = "<red><bold>" + reason + "</bold></red>";
+    if(player.level >= minlevel)
+      Game.sendGame(msg);
+    else
+      Game.sendRoom(msg, player.room);
   }
 
   static announce(announcement) {
