@@ -2,6 +2,7 @@
 
 var PVP=true;
 var minlevel=3;
+var happyHour=1;
 
 const Util = require('./Util');
 const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
@@ -98,6 +99,9 @@ class Game extends ConnectionHandler {
       return;
     }
     */
+
+    var hour = new Date().getHours();
+    if (hour>17&&hour<21) { happyHour=2; };
 
     // ziad money
     if (this.qState != -1){ 
@@ -245,7 +249,12 @@ class Game extends ConnectionHandler {
       this.dropItem(removeWord(data, 0));
       return;
     }
-
+  /*
+    if (firstWord === "drap") {
+      this.drop4exp(removeWord(data, 0));
+      return;
+    }
+  */
     if (firstWord === "train") {
       if (p.room.type !== RoomType.TRAININGROOM) {
         p.sendString("<red><bold>You cannot train here!</bold></red>");
@@ -1020,7 +1029,7 @@ class Game extends ConnectionHandler {
     p.room.addItem(p.inventory[i]);
     p.dropItem(i);
   }
-  
+
   drop4exp(item) {
     const p = this.player;
     if (item[0] === '$') {
@@ -1030,7 +1039,7 @@ class Game extends ConnectionHandler {
           p.sendString("<red><bold>You don't have that much!</bold></red>");
         } else {
           p.money -= money;
-          p.experience += money;
+          p.experience += money*happyHour;
           Game.sendRoom("<cyan><bold>" + p.name + " drops $" +
                         money + " into oblivion.</bold></cyan>", p.room);
           console.log('drop: '+money);
@@ -1046,10 +1055,10 @@ class Game extends ConnectionHandler {
     Game.sendRoom("<cyan><bold>" + p.name + " drops " +
                   p.inventory[i].name + " into oblivion.</bold></cyan>", p.room);
     console.log('drop: '+p.inventory[i].price);
-    p.experience += p.inventory[i].price;
+    p.experience += p.inventory[i].price*happyHour;
     p.dropItem(i);
   }
-  
+
   buy(itemName) {
     const p = this.player;
     const s = storeDb.findById(p.room.data);
@@ -1188,6 +1197,12 @@ class Game extends ConnectionHandler {
         ap.printStatbar();
         if (ap.hitPoints <= 0) {
           Game.playerKilled(ap);
+          // add experience to the player who killed
+          const aexp = Math.floor(ap.experience / 10);
+          p.experience += aexp*happyHour;
+          p.sendString("<cyan><bold>You gain " + aexp*happyHour +
+                 " experience.</bold></cyan>");
+
         }
         return;
     };
@@ -1352,8 +1367,8 @@ class Game extends ConnectionHandler {
     });
 
     // add experience to the player who killed it
-    p.experience += e.experience;
-    p.sendString("<cyan><bold>You gain " + e.experience +
+    p.experience += e.experience*happyHour;
+    p.sendString("<cyan><bold>You gain " + e.experience*happyHour +
                  " experience.</bold></cyan>");
 
     // remove the enemy from the game
