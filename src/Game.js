@@ -1020,7 +1020,36 @@ class Game extends ConnectionHandler {
     p.room.addItem(p.inventory[i]);
     p.dropItem(i);
   }
-
+  
+  drop4exp(item) {
+    const p = this.player;
+    if (item[0] === '$') {
+      const money = Math.abs( parseInt(item.substr(1, item.length - 1))  );
+      if (!isNaN(money)) {
+        if (money > p.money) {
+          p.sendString("<red><bold>You don't have that much!</bold></red>");
+        } else {
+          p.money -= money;
+          p.experience += money;
+          Game.sendRoom("<cyan><bold>" + p.name + " drops $" +
+                        money + " into oblivion.</bold></cyan>", p.room);
+          console.log('drop: '+money);
+        }
+        return;
+      }
+    }
+    const i = p.getItemIndex(item);
+    if (i === -1) {
+      p.sendString("<red><bold>You don't have that!</bold></red>");
+      return;
+    }
+    Game.sendRoom("<cyan><bold>" + p.name + " drops " +
+                  p.inventory[i].name + " into oblivion.</bold></cyan>", p.room);
+    console.log('drop: '+p.inventory[i].price);
+    p.experience += p.inventory[i].price;
+    p.dropItem(i);
+  }
+  
   buy(itemName) {
     const p = this.player;
     const s = storeDb.findById(p.room.data);
