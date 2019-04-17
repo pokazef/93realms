@@ -117,8 +117,15 @@ class Logon extends ConnectionHandler {
         this.connection.sendMessage(msg);
         return;
       }
+       // happy hour
+      var happyStr = "<yellow>It's not happy hour.</yellow>";
+      var hour = new Date().getHours(); 
+      if (hour>17&&hour<20) { 
+        happyStr="\r\n<yellow>It's happy hour!</yellow>";
+       };
       msg = "<green>Thank you! " +
-            "You are now entering the realm...</green>\r\n";
+            "You are now entering the realm..."+happyStr+"</green>\r\n";
+
       this.connection.sendMessage(msg);
 
       const player = new Player();
@@ -143,8 +150,17 @@ class Logon extends ConnectionHandler {
     if (this.state === ENTERPASS) {
       let msg;
       if (this.password === data) {
+
+
+       // happy hour
+      var happyStr = "";
+      var hour = new Date().getHours(); 
+      if (hour>17&&hour<20) { 
+        happyStr="\r\n<yellow>It's happy hour!</yellow>";
+       };
+
         msg = "<green>Thank you! " +
-          "You are now entering the realm...</green>\r\n";
+          "You are now entering the realm..."+happyStr+"</green>\r\n";
         this.connection.sendMessage(msg);
         this.goToGame(false);
       } else {
