@@ -1,8 +1,13 @@
 'use strict';
 
+//
+
+var chat=false;
 var PVP=true;
 var minlevel=3;
 var happyHour=1;
+
+//
 
 const Util = require('./Util');
 const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
@@ -87,21 +92,23 @@ class Game extends ConnectionHandler {
     // get the first word and lowercase it.
     const firstWord = parseWord(data, 0).toLowerCase();
 
+    // happy hour
+    const happyHour = 1;
+    const hour = new Date().getHours(); 
+    if (hour>17&&hour<20) { happyHour=2; };
+
     // ------------------------------------------------------------------------
     //  REGULAR access commands
     // ------------------------------------------------------------------------
 
-    /*
-    if (firstWord === "chat" || firstWord === ':') {
-      const text = removeWord(data, 0);
-      Game.sendGame(
-        `<white><bold>${p.name} chats: ${text}</bold></white>`);
-      return;
+    if(chat){
+      if (firstWord === "chat" || firstWord === ':') {
+        const text = removeWord(data, 0);
+        Game.sendGame(
+          `<white><bold>${p.name} chats: ${text}</bold></white>`);
+        return;
+      }
     }
-    */
-
-    var hour = new Date().getHours();
-    if (hour>17&&hour<21) { happyHour=2; };
 
     // ziad money
     if (this.qState != -1){ 
@@ -249,12 +256,7 @@ class Game extends ConnectionHandler {
       this.dropItem(removeWord(data, 0));
       return;
     }
-  /*
-    if (firstWord === "drap") {
-      this.drop4exp(removeWord(data, 0));
-      return;
-    }
-  */
+
     if (firstWord === "train") {
       if (p.room.type !== RoomType.TRAININGROOM) {
         p.sendString("<red><bold>You cannot train here!</bold></red>");
@@ -351,7 +353,6 @@ class Game extends ConnectionHandler {
       return;
     }
 
-
     //~ziad87 map
     if (firstWord == 'map'){
       var msg = '';
@@ -444,9 +445,7 @@ class Game extends ConnectionHandler {
           //lines.push(` ${color1 ? color1 : ''}###########${color2 ? color2 : ''} `);
           lines.push('<black>.</black>+-+<black>.</black>');
           //lines.push(` ${color1 ? color1 : ''}#${padEnd(name[0], 9, ' ')}#${color2 ? color2 : ''} `);
-          
           //lines.push(`${room.rooms[Direction.WEST] ? '-' : ' '}${color1 ? color1 : ''}#${padEnd(name[1], 9, ' ')}#${color2 ? color2 : ''}${room.rooms[Direction.EAST] ? '-' : ' '}`);
-            
           var dW = '<black>.</black>';
           var dE = '<black>.</black>';
           if (room.rooms[Direction.WEST]!=0) {dW='#'};
@@ -457,7 +456,6 @@ class Game extends ConnectionHandler {
           //lines.push(` ${color1 ? color1 : ''}###########${color2 ? color2 : ''} `);
           lines.push('<black>.</black>+-+<black>.</black>');
           lines.push(`<black>.</black>${room.rooms[Direction.SOUTH] ? '<black>.</black>#<black>.</black>' : '<black>...</black>'}<black>.</black>`)
-          
           //lines.push(`[ ]`);
         }
         function dont(){
@@ -602,10 +600,8 @@ class Game extends ConnectionHandler {
     //// 
 
 
-    /* map wip obsolete */
-    
+    /* map2 wip obsolete */
     if (firstWord === "map2") {
-
       var tempMap=[
         [['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>']],
         [['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>']],
@@ -614,24 +610,17 @@ class Game extends ConnectionHandler {
         [['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>'],['<black>...</black>']]
       ]
       var pPos=[2,2];
-
       //console.log(map)
-
       //level1
       if (p.room.rooms.NORTH!=0) { 
         tempMap[pPos[0]-1][pPos[1]]='|_|'
-      
       };
       if (p.room.rooms.SOUTH!=0) { tempMap[pPos[0]+1][pPos[1]]='|_|'
-
       };
       if (p.room.rooms.EAST!=0) { tempMap[pPos[0]][pPos[1]+1]='|_|'
-
       };
       if (p.room.rooms.WEST!=0) { tempMap[pPos[0]][pPos[1]-1]='|_|'
-
       };
-
       var tempMapRenderer = "";
       for (var y = 0; y < tempMap.length; y++) {
         for (var x = 0; x < tempMap[y].length; x++) {
@@ -639,16 +628,10 @@ class Game extends ConnectionHandler {
         };
         tempMapRenderer+='\n'
       };
-
       p.sendString(tempMapRenderer);
       console.log(tempMapRenderer)
-
       return;
-
-
-
     }
-    
 
     // ------------------------------------------------------------------------
     //  GOD access commands
@@ -859,10 +842,7 @@ class Game extends ConnectionHandler {
     const previous = p.room;
 
     if (!next) {
-      //
-
-
-
+      // bump
       Game.sendRoom("<red>" + p.name + " bumps into the wall to the " +
                     dir.key + "!!!</red>", p.room);
       p.addHitPoints(-1);
@@ -872,7 +852,6 @@ class Game extends ConnectionHandler {
       }
       return;
     }
-
     if (!force){
       if (next.key){
         if (next.key != {} && next.key != -1){
@@ -963,7 +942,6 @@ class Game extends ConnectionHandler {
   getItem(item) {
     const p = this.player;
     if (item[0] === '$') {
-
       // clear off the '$', and convert the result into a number.
       const money = Math.abs( parseInt(item.substr(1, item.length - 1)) );
       if (!isNaN(money)) { // if valid money amount
@@ -1141,12 +1119,9 @@ class Game extends ConnectionHandler {
         };
       };
     };
-    /*
-      // random player?
-      // p.room.players[random(0, p.room.players.length - 1)];
-    */
-    // PVP
-
+    // random player?
+    // p.room.players[random(0, p.room.players.length - 1)];
+    // PVP end
     let damage;
     if (weapon === 0) {
       damage = random(1, 3);
@@ -1155,16 +1130,12 @@ class Game extends ConnectionHandler {
       if (weapon!=undefined) {
         damage = random(weapon.min, weapon.max);        
       }else{
-        //fix
         damage = 1;
       }
       p.nextAttackTime = now + seconds(weapon.speed);
     }
-
     const attr = p.GetAttr.bind(p);
     const A = Attribute;
-    
-
     // PVP 2/2
     if (ap!=undefined) {
       var noAttack=false;
@@ -1206,7 +1177,7 @@ class Game extends ConnectionHandler {
         }
         return;
     };
-    // PVP
+    // end PVP
 
     const enemy = p.room.findEnemy(enemyName);
 
@@ -1219,7 +1190,6 @@ class Game extends ConnectionHandler {
     }
 
     const e = enemy.tp;
-
 
     if (random(0,99) >= attr(A.ACCURACY) - e.dodging) {
       Game.sendRoom("<white>" + p.name + " swings at " + e.name +
@@ -1691,8 +1661,6 @@ class Game extends ConnectionHandler {
     return desc;
 
   }
-
-
 
 }
 
