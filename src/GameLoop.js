@@ -20,6 +20,8 @@ const HEALTIME   = minutes( 1 );
 
 const file = path.join(__dirname, '..', 'data', 'gamedata.json');
 
+var happyHour = true;
+
 class GameLoop {
   constructor() {
     this.loadDatabases();
@@ -69,6 +71,20 @@ class GameLoop {
   }
 
   loop() {
+
+    //
+    var hour = new Date().getHours(); 
+    var test=false;
+    if(hour>17&&hour<20) { test=true };
+    if (happyHour!=test) {
+      var temp="It's not happy hour.";
+      if(test){temp="It's happy hour!"}
+      Game.sendGlobal("<yellow><bold>" + temp + "</bold></yellow>\r\n");
+      happyHour=test;
+      console.log(temp)
+    }; 
+   //
+
     if (timer.getMS() >= this.nextRound) {
       this.performRound();
       this.nextRound += ROUNDTIME;
