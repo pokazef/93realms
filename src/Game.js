@@ -93,7 +93,7 @@ class Game extends ConnectionHandler {
     const firstWord = parseWord(data, 0).toLowerCase();
 
     // happy hour
-    const happyHour = 1;
+    happyHour = 1;
     const hour = new Date().getHours(); 
     if (hour>17&&hour<20) { happyHour=2; };
 
