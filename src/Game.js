@@ -1155,9 +1155,11 @@ class Game extends ConnectionHandler {
             return;
          };
        if (random(0,99) >= attr(A.ACCURACY) - ap.attributes.DODGING) {
-          Game.sendRoom("<white>" + p.name + " swings at " + ap.name +
-                        " but misses!</white>", p.room);
-          return;
+          if(random(0,12)<11){
+            Game.sendRoom("<white>" + p.name + " swings at " + ap.name +
+                          " but misses!</white>", p.room);
+            return;
+          }
         }   
         damage += attr(A.STRIKEDAMAGE);
         damage -= ap.attributes.DAMAGEABSORB;
@@ -1192,9 +1194,11 @@ class Game extends ConnectionHandler {
     const e = enemy.tp;
 
     if (random(0,99) >= attr(A.ACCURACY) - e.dodging) {
-      Game.sendRoom("<white>" + p.name + " swings at " + e.name +
-                    " but misses!</white>", p.room);
-      return;
+      if(random(0,12)<11){
+        Game.sendRoom("<white>" + p.name + " swings at " + e.name +
+                      " but misses!</white>", p.room);
+        return;
+      }
     }
 
     damage += attr(A.STRIKEDAMAGE);
@@ -1234,9 +1238,11 @@ class Game extends ConnectionHandler {
     const A = Attribute;
 
     if (random(0,99) >= e.accuracy - attr(A.DODGING)) {
-      Game.sendRoom("<white>" + e.name + " swings at " + p.name +
-                    " but misses!</white>", enemy.room);
-      return;
+      if(random(0,12)<11){
+         Game.sendRoom("<white>" + e.name + " swings at " + p.name +
+                      " but misses!</white>", enemy.room);
+        return;     
+      }
     }
 
     damage += e.strikeDamage;
