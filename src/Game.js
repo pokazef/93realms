@@ -1155,7 +1155,7 @@ class Game extends ConnectionHandler {
             return;
          };
        if (random(0,99) >= attr(A.ACCURACY) - ap.attributes.DODGING) {
-          if(random(0,12)<11){
+          if(random(0,99)<99){
             Game.sendRoom("<white>" + p.name + " swings at " + ap.name +
                           " but misses!</white>", p.room);
             return;
@@ -1194,7 +1194,7 @@ class Game extends ConnectionHandler {
     const e = enemy.tp;
 
     if (random(0,99) >= attr(A.ACCURACY) - e.dodging) {
-      if(random(0,12)<11){
+      if(random(0,99)<99){
         Game.sendRoom("<white>" + p.name + " swings at " + e.name +
                       " but misses!</white>", p.room);
         return;
@@ -1238,7 +1238,7 @@ class Game extends ConnectionHandler {
     const A = Attribute;
 
     if (random(0,99) >= e.accuracy - attr(A.DODGING)) {
-      if(random(0,12)<11){
+      if(random(0,99)<99){
          Game.sendRoom("<white>" + e.name + " swings at " + p.name +
                       " but misses!</white>", enemy.room);
         return;     
