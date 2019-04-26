@@ -1,17 +1,17 @@
-# SimpleMUD
+# 93 Realms
 
-As its name implies, SimpleMUD is a NodeJS implementation of a rudimentary
+Based on SimpleMUD, a NodeJS implementation of a rudimentary
 MUD server. It is intended to be used as a learning experience for those who
 has never programmed a MUD server before.
 
 The original codebase for SimpleMUD was written in C++ by Ron Penton, the
-author of _MUD Game Programming_ book.
+author of _MUD Game Programming_ book, and ported to NodeJS by Long Nguyen.
 
-## Demo
+## Play
 
-  WebTelnet: http://smud.ourmmo.com
+  WebTelnet: http://www.windows93.net:8083/
 
-  Telnet: smud.ourmmo.com 3000
+  Telnet: windows93.net 8082
 
 ## Highlights
 
