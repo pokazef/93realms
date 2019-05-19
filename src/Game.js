@@ -1090,6 +1090,15 @@ class Game extends ConnectionHandler {
                   i.name + "</bold></cyan>", p.room);
   }
 
+  static randomHit(accuracy, dodging) {
+    if (random(0,99) >= accuracy - dodging) {
+      if(random(0,99)<99) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   playerAttack(enemyName) {
 
     const p = this.player;
@@ -1154,13 +1163,11 @@ class Game extends ConnectionHandler {
             };
             return;
          };
-       if (random(0,99) >= attr(A.ACCURACY) - ap.attributes.DODGING) {
-          if(random(0,99)<99){
-            Game.sendRoom("<white>" + p.name + " swings at " + ap.name +
-                          " but misses!</white>", p.room);
-            return;
-          }
-        }   
+        if (! Game.randomHit (attr(A.ACCURACY), ap.attributes.DODGING)) {
+          Game.sendRoom("<white>" + p.name + " swings at " + ap.name +
+                        " but misses!</white>", p.room);
+          return;
+        }
         damage += attr(A.STRIKEDAMAGE);
         damage -= ap.attributes.DAMAGEABSORB;
         if (damage < 1) damage = 1;
@@ -1193,12 +1200,10 @@ class Game extends ConnectionHandler {
 
     const e = enemy.tp;
 
-    if (random(0,99) >= attr(A.ACCURACY) - e.dodging) {
-      if(random(0,99)<99){
-        Game.sendRoom("<white>" + p.name + " swings at " + e.name +
-                      " but misses!</white>", p.room);
-        return;
-      }
+    if (! Game.randomHit (attr(A.ACCURACY), e.dodging)) {
+      Game.sendRoom("<white>" + p.name + " swings at " + e.name +
+                    " but misses!</white>", p.room);
+      return;
     }
 
     damage += attr(A.STRIKEDAMAGE);
@@ -1237,12 +1242,10 @@ class Game extends ConnectionHandler {
     const attr = p.GetAttr.bind(p);
     const A = Attribute;
 
-    if (random(0,99) >= e.accuracy - attr(A.DODGING)) {
-      if(random(0,99)<99){
-         Game.sendRoom("<white>" + e.name + " swings at " + p.name +
-                      " but misses!</white>", enemy.room);
-        return;     
-      }
+    if (! Game.randomHit (e.accuracy, attr(A.DODGING))) {
+      Game.sendRoom("<white>" + e.name + " swings at " + p.name +
+                    " but misses!</white>", enemy.room);
+      return;
     }
 
     damage += e.strikeDamage;
