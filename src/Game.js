@@ -1091,9 +1091,8 @@ class Game extends ConnectionHandler {
   }
 
   static probaHit(gap) {
-    if (gap < 1/100) return 1/100;
-    if (gap > 100) return 1;
-    return gap / 100;
+    const x = (gap - 50) / 25;
+    return (x / (1 + Math.abs(x)) + 1) / 2;
   }
 
   static randomHit(accuracy, dodging) {
