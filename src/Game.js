@@ -1090,13 +1090,14 @@ class Game extends ConnectionHandler {
                   i.name + "</bold></cyan>", p.room);
   }
 
+  static probaHit(gap) {
+    if (gap < 1/100) return 1/100;
+    if (gap > 100) return 1;
+    return gap / 100;
+  }
+
   static randomHit(accuracy, dodging) {
-    if (random(0,99) >= accuracy - dodging) {
-      if(random(0,99)<99) {
-        return false;
-      }
-    }
-    return true;
+    return Game.probaHit (accuracy - dodging) > Math.random();
   }
 
   playerAttack(enemyName) {
