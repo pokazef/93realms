@@ -1315,7 +1315,9 @@ class Game extends ConnectionHandler {
   static playerTele(player,dest) {
     const p = player;
     p.room.removePlayer(p);
+    Game.sendRoom("<green>" + p.name + " vanishes into thin air.</green>", p.room);
     p.room = roomDb.findById(dest);
+    Game.sendRoom("<green>" + p.name + " appears out of nowhere.</green>", p.room);
     p.room.addPlayer(p);
     p.sendString(Game.printRoom(p.room));
   }
