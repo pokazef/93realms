@@ -167,6 +167,7 @@ class Logon extends ConnectionHandler {
         msg = "<bold><red>INVALID PASSWORD!</red>\r\n" +
               "<green>Please enter your password. " +
               "</green></bold>\r\n";
+        this.numErrors++;
         this.connection.sendMessage(msg);
       }
       return;
