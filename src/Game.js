@@ -329,27 +329,48 @@ class Game extends ConnectionHandler {
       var runStr = removeWord(data, 0);
       var runPat = runStr.match(/[a-z]+|[^a-z]+/gi);
       var runValid=true;
-      function inValidRun(){
+      function inValidRun(str){
         runValid=false;
-        p.sendString('<red>Your run pattern is invalid.</red>');
+        p.sendString('<bold><red>'+str+'</red></bold>');
         return;
       }
       if (!Array.isArray(runPat)) {inValidRun();return;}
-      for (var r = 0; r < runPat.length; r++) {if (isNaN(runPat[r]) && runPat[r].length>1) {inValidRun();return;}}
-      if ( isNaN(runPat[0]) || isNaN(runPat[runPat.length-1])==false || (runPat.length % 2)==1 )  {inValidRun();return;}
+
+      for (var r = 0; r < runPat.length; r++) {if (isNaN(runPat[r]) && runPat[r].length>1) {inValidRun('Your run pattern is invalid.');return;}}
+      if ( isNaN(runPat[0]) || isNaN(runPat[runPat.length-1])==false || (runPat.length % 2)==1 )  {inValidRun('Your run pattern is invalid.');return;}
       var vds=['n','s','e','w'];
-      for (var r = 0; r < runPat.length; r=r+2) {if (vds.includes(runPat[r+1])==false) {inValidRun();return;}}
-      for (var r = 0; r < runPat.length; r=r+2) {if (runPat[r] > 30) {inValidRun();return;}}
-      var diz=this;
-      function runTimeout(ri,st){
-        setTimeout(function() { 
-          if (ri=="n") { diz.move(Direction.NORTH) };
-          if (ri=="s") { diz.move(Direction.SOUTH) };
-          if (ri=="w") { diz.move(Direction.WEST) };
-          if (ri=="e") { diz.move(Direction.EAST) };
-        }, st*200);
+      for (var r = 0; r < runPat.length; r=r+2) {
+        runPat[r+1]=runPat[r+1].toLowerCase();
+          if (vds.includes(runPat[r+1])==false) {
+            inValidRun()
+            return
+          }
+        }
+      for (var r = 0; r < runPat.length; r=r+2) {if (runPat[r] > 30) {
+        inValidRun('Your run pattern is invalid (don\'t use numbers greater than 30).');
+        return;}
+      }  
+      p.runPat = [];
+      for (var r = 0; r < runPat.length; r=r+2) {
+        for (var t = 0; t < runPat[r]; t++) {
+            p.runPat.push(runPat[r+1])
+        }
       }
-      if (runValid) {var st=1;for (var r = 0; r < runPat.length; r=r+2) {for (var t = 0; t < runPat[r]; t++) {runTimeout(runPat[r+1],st);st+=1}}}
+      var diz=this;
+      if (runValid) {
+        p.runInterval = setInterval(function(){ 
+          if (!diz.player.runPat||diz.player.runPat.length==0||!diz.player.loggedIn) {
+            clearInterval(diz.player.runInterval);
+            return;
+          };
+          var ri = diz.player.runPat[0];
+          if (ri=="n") { diz.move(Direction.NORTH) }
+          if (ri=="s") { diz.move(Direction.SOUTH) }
+          if (ri=="w") { diz.move(Direction.WEST) }
+          if (ri=="e") { diz.move(Direction.EAST) }
+          diz.player.runPat.shift()
+        }, 200);
+      }
       return;
     }
 
@@ -1267,7 +1288,7 @@ class Game extends ConnectionHandler {
 
   static playerKilled(player) {
     const p = player;
-
+    if (p.runPat) { p.runPat=[] }
     Game.sendRoom("<red><bold>" + p.name +
                   " has died!</bold></red>", p.room);
     // drop the money
